@@ -16,3 +16,13 @@ test('primary source ledger includes compliance and industry sources', () => {
   assert.ok(urls.some((url) => url.includes('dre.ca.gov')));
   assert.ok(urls.some((url) => url.includes('newamericanfunding.com')));
 });
+
+test('public copy is independent and exposes a valid BIA phone link', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const [html, main] = await Promise.all([
+    readFile(new URL('../index.html', import.meta.url), 'utf8'),
+    readFile(new URL('../src/main.js', import.meta.url), 'utf8'),
+  ]);
+  assert.equal((html + main).includes('with New American Funding'), false);
+  assert.equal(html.includes('tel:+19166775717'), true);
+});

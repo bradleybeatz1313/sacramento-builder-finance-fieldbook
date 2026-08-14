@@ -50,7 +50,7 @@ filters.forEach((button) => {
 const scripts = {
   email: {
     label: 'EMAIL · SALES LEADER',
-    copy: 'Hi [Name]—I’m a Sacramento-area loan officer with New American Funding. I’m not contacting you to disrupt an existing preferred-lender relationship. I help builder teams with buyers who need a second financing path: decline rescues, complex income, FHA/VA/jumbo scenarios, sale-of-home complications or simply faster escalation before a contract is lost. Could I spend 15 minutes learning where financing fallout occurs in your current process?',
+    copy: 'Hi [Name]—I’m a Sacramento-area loan officer. I’m not contacting you to disrupt an existing preferred-lender relationship. I help builder teams with buyers who need a second financing path: decline rescues, complex income, FHA/VA/jumbo scenarios, sale-of-home complications or simply faster escalation before a contract is lost. Could I spend 15 minutes learning where financing fallout occurs in your current process?',
   },
   onsite: {
     label: 'MODEL HOME · FIRST CONVERSATION',
@@ -69,11 +69,17 @@ const scriptCopy = document.querySelector('#script-copy');
 
 function selectScript(button) {
   const selected = scripts[button.dataset.script];
-  tabButtons.forEach((tab) => tab.setAttribute('aria-selected', String(tab === button)));
+  tabButtons.forEach((tab) => {
+    const selectedTab = tab === button;
+    tab.setAttribute('aria-selected', String(selectedTab));
+    tab.tabIndex = selectedTab ? 0 : -1;
+  });
   scriptPanel.setAttribute('aria-labelledby', button.id);
   scriptLabel.textContent = selected.label;
   scriptCopy.textContent = selected.copy;
 }
+
+tabButtons.forEach((tab, index) => { tab.tabIndex = index === 0 ? 0 : -1; });
 
 tabButtons.forEach((button, index) => {
   button.addEventListener('click', () => selectScript(button));

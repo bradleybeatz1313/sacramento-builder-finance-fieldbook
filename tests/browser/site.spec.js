@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 const viewports = [
   { name: 'desktop', width: 1440, height: 900 },
   { name: 'mobile', width: 390, height: 844 },
+  { name: 'narrow-mobile', width: 320, height: 568 },
   { name: 'short-desktop', width: 1258, height: 622 },
 ];
 
@@ -33,6 +34,8 @@ test('filtering and script tabs are keyboard-accessible', async ({ page }) => {
   await onsite.focus();
   await page.keyboard.press('Enter');
   await expect(onsite).toHaveAttribute('aria-selected', 'true');
+  await expect(onsite).toHaveAttribute('tabindex', '0');
+  await expect(page.getByRole('tab', { name: 'Email' })).toHaveAttribute('tabindex', '-1');
   await expect(page.locator('#script-copy')).toContainText('preferred lender');
 });
 
@@ -50,7 +53,7 @@ test('no-JavaScript fallback retains core content and links', async ({ browser }
   const page = await context.newPage();
   await page.goto('/');
   await expect(page.getByRole('heading', { name: /build the second lane/i })).toBeVisible();
-  await expect(page.getByRole('link', { name: /Regulation X §1024.14/i })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'CFPB Regulation X §1024.14', exact: true })).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   expect(overflow).toBe(false);
   await context.close();
